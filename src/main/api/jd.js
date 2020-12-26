@@ -72,6 +72,7 @@ async function getBuyInfo (Cookie, sku, num) {
       'Content-Type': ContentType
     }
   })
+  console.log(data)
   return data
 }
 

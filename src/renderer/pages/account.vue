@@ -1,8 +1,22 @@
 <template>
   <div class="account-page">
-    <Button type="primary" @click.native="login">添加账号</Button>
-    <Button type="primary" @click.native="clear">清空账号</Button>
-    <Table style="margin-top: 10px;" :columns="columns" :data="accountList"></Table>
+    <Button type="success" @click.native="login">添加账号</Button>
+    <Button type="warning" @click.native="clear">清空账号</Button>
+    <Table stripe style="margin-top: 10px;" :columns="columns" :data="accountList">
+      <template slot-scope="{ row }" slot="name">
+        <strong>{{ row.name }}</strong>
+      </template>
+      <template slot-scope="{ row }" slot="isLogin">
+        <strong>{{ row.isLogin ? '是' : '否' }}</strong>
+      </template>
+      <template slot-scope="{ row }" slot="isPlusMember">
+        <strong>{{ row.isPlusMember ? '是' : '否' }}</strong>
+      </template>
+      <template slot-scope="{ row, index }" slot="action">
+        <Button type="info" size="small" :disabled="row.isLogin" @click="login()" >登录</Button>
+        <Button type="error" size="small" @click="remove(index)">删除</Button>
+      </template>
+    </Table>
   </div>
 </template>
 
@@ -22,15 +36,23 @@
           },
           {
             title: '账号',
-            key: 'name'
+            key: 'name',
+            slot: 'name'
           },
           {
             title: '登录状态',
-            key: 'isLogin'
+            key: 'isLogin',
+            slot: 'isLogin'
           },
           {
             title: 'plus会员',
-            key: 'isPlusMember'
+            key: 'isPlusMember',
+            slot: 'isPlusMember'
+          },
+          {
+            title: '操作',
+            fixed: 'right',
+            slot: 'action'
           }
         ]
       }
@@ -74,6 +96,10 @@
       },
       clear () {
         this.$store.commit('user/CLEAR_ALL')
+      },
+      remove (i) {
+        const pinId = this.accountList[i].pinId
+        this.$store.commit('user/REMOVE', pinId)
       }
     }
   }
