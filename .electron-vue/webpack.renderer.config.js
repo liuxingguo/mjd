@@ -31,17 +31,17 @@ let rendererConfig = {
   ],
   module: {
     rules: [
-      {
-        test: /\.(js|vue)$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
-          }
-        }
-      },
+      // {
+      //   test: /\.(js|vue)$/,
+      //   enforce: 'pre',
+      //   exclude: /node_modules/,
+      //   use: {
+      //     loader: 'eslint-loader',
+      //     options: {
+      //       formatter: require('eslint-friendly-formatter')
+      //     }
+      //   }
+      // },
       {
         test: /\.less$/,
         use: ['vue-style-loader', 'css-loader', 'less-loader']
@@ -117,6 +117,18 @@ let rendererConfig = {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
+      templateParameters(compilation, assets, options) {
+        return {
+          compilation: compilation,
+          webpack: compilation.getStats().toJson(),
+          webpackConfig: compilation.options,
+          htmlWebpackPlugin: {
+            files: assets,
+            options: options
+          },
+          process,
+        };
+      },
       minify: {
         collapseWhitespace: true,
         removeAttributeQuotes: true,
